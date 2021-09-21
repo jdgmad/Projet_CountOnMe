@@ -6,47 +6,47 @@
 //  Copyright © 2021 Vincent Saluzzo. All rights reserved.
 //
 
-import UIKit
+  import UIKit
 
-// Using Delegate Protocol to send display data to the View Controller:
-protocol DisplayDelegate: AnyObject {
-    func updateDisplay(text: String)
-    func presentAlert()
-}
+  // Define Delegate Protocol to :
+  //    - send display data to the View Controller
+  //    - display alert message
+  protocol DisplayDelegate: AnyObject {
+      func updateDisplay(text: String)
+      func presentAlert()
+  }
 
   class Calculator: UIViewController {
 
   // MARK: - Properties
   
   weak var delegate: DisplayDelegate?
-  // Array storing elements of the math expression:
+  // Array elements of the calcul expression:
   var elements: [String] = []
-  // Display sent to View Controller by the delegate:
+  // Contains the calc display sent to View Controller by the delegate:
   var display: String {
       return elements.joined()
   }
-  
-  // This variable checks all possible errors in the expression preventing from producing a result
-
+  // Calculated variables
   var lastElementIsOperand: Bool {
       guard let lastElement = elements.last else { return false }
-      return lastElement == "+" || lastElement == "-"
+      return lastElement == "+" || lastElement == "-" || lastElement == "*" || lastElement == "/"
   }
   var lastElementIsNumber: Bool {
       guard let lastElement = display.last else { return false }
       return lastElement.isNumber == true
   }
-  var expressionHasOperand: Bool {
-      return elements.contains("+") || elements.contains("-")
+  var calcExpressionHasOperand: Bool {
+      return elements.contains("+") || elements.contains("-") || elements.contains("*")
+        || elements.contains("/")
   }
     
-    // Error check computed variables
-  var expressionIsCorrect: Bool {
-      return elements.count >= 3 && expressionHasOperand && !lastElementIsOperand
+  var calcExpressionIsCorrect: Bool {
+      return elements.count >= 3 && calcExpressionHasOperand && !lastElementIsOperand
           && !(display.contains("/0"))
   }
     
-    var expressionHaveEnoughElement: Bool {
+    var calcExpressionHaveEnoughElement: Bool {
         return elements.count >= 3
     }
     
@@ -54,44 +54,55 @@ protocol DisplayDelegate: AnyObject {
         return elements.last != "+" && elements.last != "-"
     }
     
-    var expressionHasResult: Bool {
+    var calcExpressionHasResult: Bool {
       return elements.contains("=")
     }
     
-    // View Life cycles
+    
+    // MARK: - Methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
     
-    //This func will call the delegate method to update display in the View Controller:
+    //This func will call the delegate method to update display in the View Controller
     func notifyDisplay() {
         delegate?.updateDisplay(text: display)
     }
   
-    //  This func will join numbers if several numbers are tapped.
-    func joinNumbers(next: String) {
-      guard let lastElement = elements.last else { return }
-      let newElement = lastElement + next
-      elements.removeLast()
-      elements.append(newElement)
+    //  This func will concat numbers if several numbers are tapped.
+    func concatNumbers(next: String) {
+      if let lastElement = elements.last {
+        let newElement = lastElement + next
+        elements.removeLast()
+        elements.append(newElement)
+      }
     }
     
-    // View actions
+    // Actions on number button tapped :
+    // Start a new calcul expression if there is already a result display
+    // or Concat the numbers with the previous tapped was a number
+    // or display the number tapped
     func tappedNumberButton(number: String) {
-      if expressionHasResult  { // If there is already a result, tapping a number will start a new expression:
+      // If there is already a result, tapping a number will start a new expression
+      if calcExpressionHasResult  {
           elements.removeAll()
           elements.append(number)
       } else if lastElementIsNumber {
-          joinNumbers(next: number)
+          concatNumbers(next: number)
       } else {
           elements.append(number)
       }
       notifyDisplay()
     }
     
+    // Actions on operand button tapped :
+    // Start a new calc expression with the previous result
+    // or add the operand in the array elements
     func tappedOperandButton(operand: String) {
-        if expressionHasResult { // if there is already a result, we will start a new expression with it:
+      // if there is already a result, we will start a new expression with it:
+      if calcExpressionHasResult {
             if let result = elements.last {
                 elements.removeAll()
                 elements.append("\(result)")
@@ -105,22 +116,23 @@ protocol DisplayDelegate: AnyObject {
             }
         }
     }
-
+    // Actions on equal button tapped:
+    // Check if the calcul expression is correct, if not send an alert
+    // Perform the calcul if there is not a previous result
     func tappedEqualButton() {
-        // First check if the expression is correct and can produce a result otherwise, send an Alert
-        guard expressionIsCorrect else {
+        if !calcExpressionIsCorrect {
             delegate?.presentAlert()
             return
         }
-        // Then check if there is already a result before performing calcul, otherwise pressing equal does nothing
-        if !expressionHasResult  {
+        if !calcExpressionHasResult  {
             performCalcul()
             notifyDisplay()
             return
         }
     }
     
-    // Method linked to Reset Button (AC)
+    // Clear the elements array  on the Reset Button
+    // Display "0"
     func reset() {
         elements.removeAll()
         delegate?.updateDisplay(text: "0")
@@ -128,34 +140,70 @@ protocol DisplayDelegate: AnyObject {
     
     //This is the main algorithm which will produce the result from the expression:
     func performCalcul() {
-        var expression = elements
+        var calcExpression = operandPriorities()
         // Iterate over operations while an operand still here:
-        while expression.count > 1 {
-            guard let left = Double(expression[0]) else { return }
-            guard let right = Double(expression[2]) else { return }
-            let operand = expression[1]
-            let result: Double
+        while calcExpression.count > 1 {
+            guard let left = Double(calcExpression[0]) else { return }
+            guard let right = Double(calcExpression[2]) else { return }
+            let operand = calcExpression[1]
+            let calcResult: Double
             switch operand {
-            case "+": result = left + right
-            case "-": result = left - right
+            case "+": calcResult = left + right
+            case "-": calcResult = left - right
             default: return
             }
-            expression = Array(expression.dropFirst(3))
-            expression.insert(formatResult(result), at: 0)
+            calcExpression = Array(calcExpression.dropFirst(3))
+            //calcExpression.insert(formatResult(calcResult), at: 0)
+          calcExpression.insert(calcResult.getStringValue(withFloatingPoints: 2), at: 0)
         }
-        //Add result to elements to update display
-        guard let finalResult = expression.first else { return }
-        elements.append("=")
-        elements.append("\(finalResult)")
+        //Update the display elements
+        if let finalResult = calcExpression.first {
+          elements.append("=")
+          elements.append("\(finalResult)")
+        }
     }
     
-    private func formatResult(_ result: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 2
-        guard let formatedResult = formatter.string(from: NSNumber(value: result)) else { return String() }
-        return formatedResult
+    // This func will give the priority to the operation "x" and "/" in the calcul expression
+    func operandPriorities() -> [String] {
+        var calcExpressionToReduce = elements
+        while calcExpressionToReduce.contains("*") || calcExpressionToReduce.contains("/") {
+            if let index = calcExpressionToReduce.firstIndex(where: { $0 == "*" || $0 == "/" })  {
+                let operand = calcExpressionToReduce[index]
+                let calcResult: Double
+                if let left = Double(calcExpressionToReduce[index - 1]) {
+                    if let right = Double(calcExpressionToReduce[index + 1]) {
+                        if operand == "*" {
+                            calcResult = left * right
+                        } else {
+                            calcResult = left / right
+                        }
+                        //Replacing the elements by the result
+                        calcExpressionToReduce.remove(at: index + 1)
+                        calcExpressionToReduce.remove(at: index)
+                        calcExpressionToReduce.remove(at: index - 1)
+                        calcExpressionToReduce.insert(calcResult.getStringValue(withFloatingPoints: 2), at: index - 1)
+                    }
+                }
+            }
+        }
+        return calcExpressionToReduce
     }
-    
+}
 
+extension Double {
+  /// Convert double in String with variable decimal points.
+  ///
+  /// - Parameters:
+  ///   - points: Give the numbers of decimal points to display
+  ///
+  /// If there is no fractionnal part return only the integer part
+  func getStringValue(withFloatingPoints points: Int = 0) -> String {
+    let valDouble = modf(self)
+    // get the fractionnal value
+    let fractionalVal = (valDouble.1)
+    if fractionalVal > 0 {
+      return String(format: "%.*f", points, self)
+    }
+    return String(format: "%.0f", self)
+    }
 }

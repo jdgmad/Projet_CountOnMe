@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="eqK-jh-KKu">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -21,14 +22,29 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="0" textAlignment="right" translatesAutoresizingMaskIntoConstraints="NO" id="T2H-yn-nBB">
-                                <rect key="frame" x="30" y="74" width="354" height="150"/>
+                                <rect key="frame" x="30" y="124" width="354" height="150"/>
                                 <color key="backgroundColor" red="0.24527746819999999" green="0.53481305040000005" blue="0.58749136739999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="150" id="6xD-0m-f6b"/>
+                                    <constraint firstAttribute="height" constant="80" id="XbI-7J-k4e"/>
                                 </constraints>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="40"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="36"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="XbI-7J-k4e"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=compact">
+                                    <mask key="constraints">
+                                        <exclude reference="6xD-0m-f6b"/>
+                                        <include reference="XbI-7J-k4e"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                </variation>
                             </textView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="isI-Gg-Iye">
                                 <rect key="frame" x="30" y="294" width="354" height="538"/>
@@ -43,6 +59,9 @@
                                                 <state key="normal" title="C">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="resetButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="AIS-zy-coI"/>
                                                 </connections>
@@ -54,6 +73,9 @@
                                                 <state key="normal" title="+/-">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W04-n1-Wen">
                                                 <rect key="frame" x="182" y="0.0" width="81" height="99.5"/>
@@ -62,14 +84,26 @@
                                                 <state key="normal" title="%">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xaE-qu-A37">
                                                 <rect key="frame" x="273" y="0.0" width="81" height="99.5"/>
                                                 <color key="backgroundColor" red="1" green="0.57810515169999999" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="41"/>
                                                 <state key="normal" title="/">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
+                                                <variation key="heightClass=compact-widthClass=regular">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                                </variation>
+                                                <connections>
+                                                    <action selector="tappedOperandButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="qNu-nZ-mko"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -83,6 +117,9 @@
                                                 <state key="normal" title="7">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="hP4-PB-hjk"/>
                                                 </connections>
@@ -94,6 +131,9 @@
                                                 <state key="normal" title="8">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="sXq-RQ-M13"/>
                                                 </connections>
@@ -105,6 +145,9 @@
                                                 <state key="normal" title="9">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="dkZ-Ca-RBr"/>
                                                 </connections>
@@ -112,10 +155,19 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="huL-Re-wNI">
                                                 <rect key="frame" x="273" y="0.0" width="81" height="99.5"/>
                                                 <color key="backgroundColor" systemColor="systemOrangeColor"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
-                                                <state key="normal" title="x">
+                                                <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                                <state key="normal" title="*">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                                                </variation>
+                                                <variation key="heightClass=compact-widthClass=regular">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="37"/>
+                                                </variation>
+                                                <connections>
+                                                    <action selector="tappedOperandButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="alu-54-3Ac"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -129,6 +181,9 @@
                                                 <state key="normal" title="4">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="UBp-pc-Zws"/>
                                                 </connections>
@@ -140,6 +195,9 @@
                                                 <state key="normal" title="5">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="KXP-OD-Mn5"/>
                                                 </connections>
@@ -151,6 +209,9 @@
                                                 <state key="normal" title="6">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="tOS-Eu-gDY"/>
                                                 </connections>
@@ -158,10 +219,16 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YD6-ul-r3f">
                                                 <rect key="frame" x="273" y="0.0" width="81" height="100"/>
                                                 <color key="backgroundColor" systemColor="systemOrangeColor"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="50"/>
                                                 <state key="normal" title="-">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                                </variation>
+                                                <variation key="heightClass=compact-widthClass=regular">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="36"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedOperandButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="boC-Go-5IJ"/>
                                                 </connections>
@@ -178,6 +245,9 @@
                                                 <state key="normal" title="1">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="9Lg-YB-Cld"/>
                                                 </connections>
@@ -189,6 +259,9 @@
                                                 <state key="normal" title="2">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="kbq-H0-oE6"/>
                                                 </connections>
@@ -200,6 +273,9 @@
                                                 <state key="normal" title="3">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="ULy-e3-u1t"/>
                                                 </connections>
@@ -207,10 +283,16 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6hg-po-HSY">
                                                 <rect key="frame" x="273" y="0.0" width="81" height="99.5"/>
                                                 <color key="backgroundColor" systemColor="systemOrangeColor"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                                 <state key="normal" title="+">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                                                </variation>
+                                                <variation key="heightClass=compact-widthClass=regular">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="36"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedOperandButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="scY-pe-0lX"/>
                                                 </connections>
@@ -227,6 +309,9 @@
                                                 <state key="normal" title="0">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="eap-XB-lJd"/>
                                                 </connections>
@@ -234,10 +319,16 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qMj-Of-bCU">
                                                 <rect key="frame" x="182" y="0.0" width="172" height="99.5"/>
                                                 <color key="backgroundColor" red="0.0" green="0.56284224989999998" blue="0.31881666180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="35"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="41"/>
                                                 <state key="normal" title="=">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <variation key="heightClass=compact-widthClass=compact">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                                </variation>
+                                                <variation key="heightClass=compact-widthClass=regular">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="tappedEqualButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="3EK-k6-lnv"/>
                                                 </connections>
@@ -266,10 +357,16 @@
                         <color key="backgroundColor" red="0.12984204290000001" green="0.12984612579999999" blue="0.12984395030000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="AWJ-Vl-uau" firstAttribute="trailing" secondItem="T2H-yn-nBB" secondAttribute="trailing" constant="30" id="31O-2D-WUh"/>
-                            <constraint firstItem="AWJ-Vl-uau" firstAttribute="bottom" secondItem="isI-Gg-Iye" secondAttribute="bottom" constant="30" id="Apo-mc-JF3"/>
+                            <constraint firstItem="AWJ-Vl-uau" firstAttribute="bottom" secondItem="isI-Gg-Iye" secondAttribute="bottom" constant="30" id="Apo-mc-JF3">
+                                <variation key="heightClass=compact" constant="20"/>
+                            </constraint>
                             <constraint firstItem="AWJ-Vl-uau" firstAttribute="trailing" secondItem="isI-Gg-Iye" secondAttribute="trailing" constant="30" id="bSu-hW-TuX"/>
-                            <constraint firstItem="isI-Gg-Iye" firstAttribute="top" secondItem="AWJ-Vl-uau" secondAttribute="top" constant="250" id="ekn-LR-76q"/>
-                            <constraint firstItem="T2H-yn-nBB" firstAttribute="top" secondItem="AWJ-Vl-uau" secondAttribute="top" constant="30" id="fsZ-re-1RW"/>
+                            <constraint firstItem="isI-Gg-Iye" firstAttribute="top" secondItem="AWJ-Vl-uau" secondAttribute="top" constant="250" id="ekn-LR-76q">
+                                <variation key="heightClass=compact" constant="150"/>
+                            </constraint>
+                            <constraint firstItem="isI-Gg-Iye" firstAttribute="top" secondItem="T2H-yn-nBB" secondAttribute="bottom" constant="20" id="gms-uT-MNL">
+                                <variation key="heightClass=compact" constant="10"/>
+                            </constraint>
                             <constraint firstItem="T2H-yn-nBB" firstAttribute="leading" secondItem="AWJ-Vl-uau" secondAttribute="leading" constant="30" id="pp0-up-VXZ"/>
                             <constraint firstItem="isI-Gg-Iye" firstAttribute="leading" secondItem="AWJ-Vl-uau" secondAttribute="leading" constant="30" id="u5o-cJ-bDG"/>
                         </constraints>
