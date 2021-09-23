@@ -49,6 +49,7 @@
       "size" : "60x60"
     },
     {
+      "filename" : "iconCalc20.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "20x20"
@@ -60,6 +61,7 @@
       "size" : "20x20"
     },
     {
+      "filename" : "iconCalc29.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "29x29"
@@ -83,21 +85,25 @@
       "size" : "40x40"
     },
     {
+      "filename" : "iconCalc76.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "76x76"
     },
     {
+      "filename" : "iconCalc152.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "76x76"
     },
     {
+      "filename" : "iconCalc167.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "83.5x83.5"
     },
     {
+      "filename" : "iconCalc1024.png",
       "idiom" : "ios-marketing",
       "scale" : "1x",
       "size" : "1024x1024"

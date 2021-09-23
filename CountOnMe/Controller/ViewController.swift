@@ -50,9 +50,9 @@
       func updateDisplay(text: String) {
           textView.text = text
       }
-      func presentAlert() {
+    func presentAlert(errorMessage: String) {
           let alertVC = UIAlertController(title: "Erreur", message:
-              "Veuillez entrer une expression correcte !", preferredStyle: .alert)
+              errorMessage, preferredStyle: .alert)
           alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
           return self.present(alertVC, animated: true, completion: nil)
       }
