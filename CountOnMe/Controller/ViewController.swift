@@ -43,7 +43,15 @@
     @IBAction func resetButton(_ sender: UIButton) {
       calculator.reset()
     }
-}
+    
+    @IBAction func tappedSignButton(_ sender: UIButton) {
+      calculator.tappedSignButton()
+    }
+    
+    @IBAction func tappedPoucentageButton(_ sender: UIButton) {
+      calculator.tappedPourcentageButton()
+    }
+  }
 
   // MARK: - Extension
   extension ViewController: DisplayDelegate {

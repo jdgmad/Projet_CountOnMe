@@ -21,52 +21,60 @@
   // MARK: - Properties
   
   weak var delegate: DisplayDelegate?
+    
   // Array elements of the calcul expression:
   var elements: [String] = [] {
       didSet {
         delegate?.updateDisplay(text: display)
+        print(elements)
       }
     }
   // Contains the calc display sent to View Controller by the delegate:
   var display: String {
       return elements.joined()
   }
+    
   // Calculated variables
-  var lastElementIsOperand: Bool {
+  private var lastElementIsOperand: Bool {
       guard let lastElement = elements.last else { return false }
       return lastElement == "+" || lastElement == "-" || lastElement == "*" || lastElement == "/"
   }
-  var lastElementIsNumber: Bool {
-      guard let lastElement = display.last else { return false }
-      return lastElement.isNumber == true
-  }
-  var calcExpressionHasOperand: Bool {
-      return elements.contains("+") || elements.contains("-") || elements.contains("*")
-        || elements.contains("/")
+  private var lastElementIsNumber: Bool {
+      guard let lastElement = elements.last else { return false }
+    return lastElement.isnumber == true
   }
     
-  var calcSyntaxExpressionIsCorrect: Bool {
-      return elements.count >= 3 && calcExpressionHasOperand && !lastElementIsOperand
+  private var calcSyntaxExpressionIsCorrect: Bool {
+      return calcExpressionHaveEnoughElement && !lastElementIsOperand
           && !(display.contains("/0"))
   }
     
   var errorSyntaxExpression: String {
-    if elements.count < 3 { return "Missing elements" }
-    if !calcExpressionHasOperand { return "Expression has no operand"}
+    //if elements.count < 3 { return "Missing elements" }
     if lastElementIsOperand { return "Last element is operand"}
     if display.contains("/0") { return "Try to divid by zero"}
-    return "Syntax error"
+    return "Missing elements"
   }
     
-  var calcExpressionHaveEnoughElement: Bool {
+  // This var return true if the last clacul oveflow.
+  // In this case the result of the calcul should be "inf" (infinity)
+  private var lastCalculOverFlow: Bool {
+    guard let lastElement = elements.last else { return false }
+    if lastElement == "inf" {
+      return true
+    }
+    return false
+  }
+    
+  private var calcExpressionHaveEnoughElement: Bool {
       return elements.count >= 3
   }
     
-  var canAddOperator: Bool {
+  private var canAddOperator: Bool {
       return elements.last != "+" && elements.last != "-" && elements.last != "*" && elements.last != "/"
   }
     
-  var calcExpressionHasResult: Bool {
+  private var calcExpressionHasResult: Bool {
       return elements.contains("=")
   }
     
@@ -74,13 +82,30 @@
   // MARK: - Methods
     
   //  This func will concat numbers if several numbers are tapped.
-  func concatNumbers(next: String) {
+  private func concatNumbers(next: String) {
     if let lastElement = elements.last {
       let newElement = lastElement + next
       elements.removeLast()
       elements.append(newElement)
     }
   }
+    
+  private func changeSignLastNumber() {
+    if let lastElement = elements.last {
+      let newElement = Double(lastElement)! * -1.0
+      elements.removeLast()
+      elements.append(newElement.getStringValue(withFloatingPoints: 2))
+    }
+  }
+    
+  private func applyPoucentageLastNumber() {
+    if let lastElement = elements.last {
+      let newElement = Double(lastElement)! / 100
+      elements.removeLast()
+      elements.append(newElement.getStringValue(withFloatingPoints: 2))
+    }
+  }
+    
     
   // Actions on number button tapped :
   // Start a new calcul expression if there is already a result display
@@ -124,14 +149,25 @@
         }
         if !calcExpressionHasResult  {
             calculateExpression()
+            if lastCalculOverFlow {
+              delegate?.presentAlert(errorMessage: "Clacul overflow")
+              //reset()
+            }
             return
         }
     }
-    
-    func displayErrorExpression() {
-      
+
+    func tappedSignButton() {
+      if lastElementIsNumber {
+        changeSignLastNumber()
+      }
     }
     
+    func tappedPourcentageButton() {
+      if lastElementIsNumber {
+        applyPoucentageLastNumber()
+      }
+    }
     
     // Clear the elements array  on the Reset Button
     // Display "0"
@@ -141,7 +177,7 @@
     }
     
     //This is the main algorithm which will produce the result from the expression:
-    func calculateExpression() {
+    private func calculateExpression() {
         var calcExpression = performOperandPriority()
         // Iterate over operations while an operand still here:
         while calcExpression.count > 1 {
@@ -149,14 +185,15 @@
             guard let right = Double(calcExpression[2]) else { return }
             let operand = calcExpression[1]
             let calcResult: Double
-            switch operand {
-            case "+": calcResult = left + right
-            case "-": calcResult = left - right
-            default: return
+            if operand == "+" {
+              calcResult = left + right
+            }
+            else {
+              calcResult = left - right
             }
             calcExpression = Array(calcExpression.dropFirst(3))
             //calcExpression.insert(formatResult(calcResult), at: 0)
-          calcExpression.insert(calcResult.getStringValue(withFloatingPoints: 2), at: 0)
+            calcExpression.insert(calcResult.getStringValue(withFloatingPoints: 2), at: 0)
         }
         //Update the display elements
         if let finalResult = calcExpression.first {
@@ -166,7 +203,7 @@
     }
     
     // This func will give the priority to the operation "x" and "/" in the calcul expression
-    func performOperandPriority() -> [String] {
+    private func performOperandPriority() -> [String] {
         var calcExpressionToReduce = elements
         // Iterate over calcul Expression while an "x" or "/" operand still here:
         while calcExpressionToReduce.contains("*") || calcExpressionToReduce.contains("/") {
@@ -175,15 +212,9 @@
                 let calcResult: Double
                 if let left = Double(calcExpressionToReduce[index - 1]) {
                     if let right = Double(calcExpressionToReduce[index + 1]) {
-                        if operand == "*" {
                         // Operation multiply
-                          let wrapMult = Int64(left).multipliedReportingOverflow(by: Int64(right))
-                          if wrapMult.overflow {
-                            delegate?.presentAlert(errorMessage: "Calculation overflow")
-                            calcResult = 0
-                          } else {
+                        if operand == "*" {
                             calcResult = left * right
-                          }
                         // Operation divid
                         }else {
                             calcResult = left / right
@@ -200,52 +231,36 @@
         }
         return calcExpressionToReduce
       }
-    
-  /*
-    // This func will give the priority to the operation "x" and "/" in the calcul expression
-    func performOperandPriority() -> [String] {
-        var calcExpressionToReduce = elements
-        // Iterate over calcul Expression while an "x" or "/" operand still here:
-        while calcExpressionToReduce.contains("*") || calcExpressionToReduce.contains("/") {
-            if let index = calcExpressionToReduce.firstIndex(where: { $0 == "*" || $0 == "/" })  {
-                let operand = calcExpressionToReduce[index]
-                let calcResult: Double
-                if let left = Double(calcExpressionToReduce[index - 1]) {
-                    if let right = Double(calcExpressionToReduce[index + 1]) {
-                        if operand == "*" {
-                            calcResult = left * right
-                        }else {
-                            calcResult = left / right
-                        }
-                        //Replacing the elements by the result
-                        calcExpressionToReduce.remove(at: index + 1)
-                        calcExpressionToReduce.remove(at: index)
-                        calcExpressionToReduce.remove(at: index - 1)
-                        calcExpressionToReduce.insert(calcResult.getStringValue(withFloatingPoints: 2), at: index - 1)
-                    }
-                }
-            }
-        }
-        return calcExpressionToReduce
-      }*/
+
   }
   
-
-
 extension Double {
-/// Convert double in String with variable decimal points.
-///
-/// - Parameters:
-///   - points: Give the numbers of decimal points to display
-///
-/// If there is no fractionnal part return only the integer part
-func getStringValue(withFloatingPoints points: Int = 0) -> String {
-  let valDouble = modf(self)
-  // get the fractionnal value
-  let fractionalVal = (valDouble.1)
-  if fractionalVal > 0 {
-    return String(format: "%.*f", points, self)
+
+  /// Convert double in String with variable decimal points.
+  ///
+  /// - Parameters:
+  ///   - points: Give the numbers of decimal points to display
+  ///
+  /// If there is no fractionnal part return only the integer part
+  ///
+  func getStringValue(withFloatingPoints points: Int = 0) -> String {
+    if self < 10000000000 {
+      let valDouble = modf(self)
+      // get the fractionnal value
+      let fractionalVal = (valDouble.1)
+      if fractionalVal != 0 {
+        return String(format: "%.*f", points, self)
+      }
+      return String(format: "%.0f", self)
+    }
+    else{
+      return String(format: "%.*e", points, self)
+    }
   }
-  return String(format: "%.0f", self)
+}
+
+extension String {
+  var isnumber: Bool {
+    return Double(self) != nil
   }
 }
