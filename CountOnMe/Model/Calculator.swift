@@ -23,10 +23,10 @@
   weak var delegate: DisplayDelegate?
     
   // Array elements of the calcul expression:
+  // At each change update the display
   var elements: [String] = [] {
       didSet {
         delegate?.updateDisplay(text: display)
-        print(elements)
       }
     }
   // Contains the calc display sent to View Controller by the delegate:
@@ -41,7 +41,11 @@
   }
   private var lastElementIsNumber: Bool {
       guard let lastElement = elements.last else { return false }
-    return lastElement.isnumber == true
+      return lastElement.isnumber == true
+  }
+  private var lastElementContainsDot: Bool {
+      guard let lastElement = elements.last else { return false }
+      return lastElement.contains(".")
   }
     
   private var calcSyntaxExpressionIsCorrect: Bool {
@@ -70,14 +74,7 @@
       return elements.count >= 3
   }
     
-  private var canAddOperator: Bool {
-      return elements.last != "+" && elements.last != "-" && elements.last != "*" && elements.last != "/"
-  }
-    
-  private var calcExpressionHasResult: Bool {
-      return elements.contains("=")
-  }
-    
+  private var calcExpressionHasResult = false
     
   // MARK: - Methods
     
@@ -105,8 +102,6 @@
       elements.append(newElement.getStringValue(withFloatingPoints: 2))
     }
   }
-    
-    
   // Actions on number button tapped :
   // Start a new calcul expression if there is already a result display
   // or Concat the numbers with the previous tapped was a number
@@ -115,6 +110,7 @@
     if calcExpressionHasResult  {
         elements.removeAll()
         elements.append(number)
+        calcExpressionHasResult = false
     } else if lastElementIsNumber {
         concatNumbers(next: number)
     } else {
@@ -122,10 +118,10 @@
     }
   }
     
-    // Actions on operand button tapped :
-    // Start a new calc expression with the previous result
-    // or add the operand in the array elements
-    func tappedOperandButton(operand: String) {
+  // Actions on operand button tapped :
+  // Start a new calc expression with the previous result
+  // or add the operand in the array elements
+  func tappedOperandButton(operand: String) {
       // if there is already a result, we will start a new expression with it:
       if calcExpressionHasResult {
             if let result = elements.last {
@@ -133,16 +129,17 @@
                 elements.append("\(result)")
                 elements.append("\(operand)")
             }
-        } else {
-            if canAddOperator && lastElementIsNumber {
+            calcExpressionHasResult = false
+      } else {
+            if !lastElementIsOperand && lastElementIsNumber {
                 elements.append("\(operand)")
             }
-        }
-    }
-    // Actions on equal button tapped:
-    // Check if the calcul expression is correct, if not send an alert
-    // Perform the calcul if there is not a previous result, if yes do nothing
-    func tappedEqualButton() {
+      }
+  }
+  // Actions on equal button tapped:
+  // Check if the calcul expression is correct, if not send an alert
+  // Perform the calcul if there is not a previous result, if yes do nothing
+  func tappedEqualButton() {
         if !calcSyntaxExpressionIsCorrect {
           delegate?.presentAlert(errorMessage: errorSyntaxExpression)
             return
@@ -150,87 +147,94 @@
         if !calcExpressionHasResult  {
             calculateExpression()
             if lastCalculOverFlow {
-              delegate?.presentAlert(errorMessage: "Clacul overflow")
+              delegate?.presentAlert(errorMessage: "Calcul overflow")
               //reset()
             }
             return
         }
-    }
-
-    func tappedSignButton() {
+  }
+    
+  // Change the sign if the last element is a number
+  func tappedSignButton() {
       if lastElementIsNumber {
         changeSignLastNumber()
       }
-    }
-    
-    func tappedPourcentageButton() {
+  }
+  //
+  func tappedPourcentageButton() {
       if lastElementIsNumber {
         applyPoucentageLastNumber()
       }
-    }
+  }
     
-    // Clear the elements array  on the Reset Button
-    // Display "0"
-    func reset() {
-        elements.removeAll()
-        delegate?.updateDisplay(text: "0")
-    }
+  func tappedDotButton(dot: String) {
+      if lastElementIsNumber && !lastElementContainsDot{
+          concatNumbers(next: dot)
+      }
+  }
     
-    //This is the main algorithm which will produce the result from the expression:
-    private func calculateExpression() {
-        var calcExpression = performOperandPriority()
-        // Iterate over operations while an operand still here:
-        while calcExpression.count > 1 {
-            guard let left = Double(calcExpression[0]) else { return }
-            guard let right = Double(calcExpression[2]) else { return }
-            let operand = calcExpression[1]
-            let calcResult: Double
-            if operand == "+" {
-              calcResult = left + right
-            }
-            else {
-              calcResult = left - right
-            }
-            calcExpression = Array(calcExpression.dropFirst(3))
-            //calcExpression.insert(formatResult(calcResult), at: 0)
-            calcExpression.insert(calcResult.getStringValue(withFloatingPoints: 2), at: 0)
+  // Clear the elements array  on the Reset Button
+  // Display "0"
+  func reset() {
+      elements.removeAll()
+      delegate?.updateDisplay(text: "0")
+  }
+    
+  //This is the main algorithm which will produce the result from the expression:
+  private func calculateExpression() {
+      var calcExpression = performOperandPriority()
+      // Iterate over operations while an operand still here:
+      while calcExpression.count > 1 {
+          guard let left = Double(calcExpression[0]) else { return }
+          guard let right = Double(calcExpression[2]) else { return }
+          let operand = calcExpression[1]
+          let calcResult: Double
+          if operand == "+" {
+            calcResult = left + right
+          }
+          else {
+            calcResult = left - right
+          }
+          calcExpression = Array(calcExpression.dropFirst(3))
+          calcExpression.insert(calcResult.getStringValue(withFloatingPoints: 2), at: 0)
         }
         //Update the display elements
         if let finalResult = calcExpression.first {
-          elements.append("=")
+          //elements.append("=")
+          calcExpressionHasResult = true
+          elements.removeAll()
           elements.append("\(finalResult)")
         }
-    }
+  }
     
-    // This func will give the priority to the operation "x" and "/" in the calcul expression
-    private func performOperandPriority() -> [String] {
-        var calcExpressionToReduce = elements
-        // Iterate over calcul Expression while an "x" or "/" operand still here:
-        while calcExpressionToReduce.contains("*") || calcExpressionToReduce.contains("/") {
-            if let index = calcExpressionToReduce.firstIndex(where: { $0 == "*" || $0 == "/" })  {
-                let operand = calcExpressionToReduce[index]
-                let calcResult: Double
-                if let left = Double(calcExpressionToReduce[index - 1]) {
-                    if let right = Double(calcExpressionToReduce[index + 1]) {
-                        // Operation multiply
-                        if operand == "*" {
-                            calcResult = left * right
-                        // Operation divid
-                        }else {
-                            calcResult = left / right
-                        }
-                        //Replacing the elements by the result
-                        calcExpressionToReduce.remove(at: index + 1)
-                        calcExpressionToReduce.remove(at: index)
-                        calcExpressionToReduce.remove(at: index - 1)
-                        let calcResultDouble = Double(calcResult)
-                        calcExpressionToReduce.insert(calcResultDouble.getStringValue(withFloatingPoints: 2), at: index - 1)
-                    }
-                }
-            }
-        }
-        return calcExpressionToReduce
+  // This func will give the priority to the operation "x" and "/" in the calcul expression
+  private func performOperandPriority() -> [String] {
+      var calcExpressionToReduce = elements
+      // Iterate over calcul Expression while an "x" or "/" operand still here:
+      while calcExpressionToReduce.contains("*") || calcExpressionToReduce.contains("/") {
+          if let index = calcExpressionToReduce.firstIndex(where: { $0 == "*" || $0 == "/" })  {
+              let operand = calcExpressionToReduce[index]
+              let calcResult: Double
+              if let left = Double(calcExpressionToReduce[index - 1]) {
+                  if let right = Double(calcExpressionToReduce[index + 1]) {
+                      // Operation multiply
+                      if operand == "*" {
+                          calcResult = left * right
+                      // Operation divid
+                      }else {
+                          calcResult = left / right
+                      }
+                      //Replacing the elements by the result
+                      calcExpressionToReduce.remove(at: index + 1)
+                      calcExpressionToReduce.remove(at: index)
+                      calcExpressionToReduce.remove(at: index - 1)
+                      calcExpressionToReduce.insert(calcResult.getStringValue(withFloatingPoints: 2), at: index - 1)
+                  }
+              }
+          }
       }
+      return calcExpressionToReduce
+    }
 
   }
   
@@ -244,7 +248,7 @@ extension Double {
   /// If there is no fractionnal part return only the integer part
   ///
   func getStringValue(withFloatingPoints points: Int = 0) -> String {
-    if self < 10000000000 {
+    if self < 10000000000 && self > -10000000000 {
       let valDouble = modf(self)
       // get the fractionnal value
       let fractionalVal = (valDouble.1)

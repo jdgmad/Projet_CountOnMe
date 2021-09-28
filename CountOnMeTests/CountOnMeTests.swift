@@ -115,7 +115,7 @@ class CalculatorTests: XCTestCase {
     
       setEqualTapped()
     
-      XCTAssertTrue(calcTest.display == "3*2=6")
+      XCTAssertTrue(calcTest.display == "6")
   }
   
   func testGivenExpressionHasAResult_WhenEqualIstapped_ThenExpressionDoesntChange() {
@@ -126,7 +126,7 @@ class CalculatorTests: XCTestCase {
     
       setEqualTapped()
     
-      XCTAssertTrue(calcTest.display == "7/2=3.50")
+      XCTAssertTrue(calcTest.display == "3.50")
   }
   
   func testGivenAnIncorrectExpression_WhenEqualIstapped_ThenExpressionDoesntChange() {
@@ -149,7 +149,7 @@ class CalculatorTests: XCTestCase {
   
       setEqualTapped()
 
-      XCTAssertTrue(calcTest.elements == ["2", "+", "5", "*", "4", "=", "22"])
+      XCTAssertTrue(calcTest.elements == ["22"])
   }
   
   func testGivenNumberIsOver10000000000_WhenEqualIsTapped_ThenDisplayExponantFormat() {
@@ -197,6 +197,19 @@ class CalculatorTests: XCTestCase {
     
     XCTAssertTrue(calcTest.elements == ["0.35"])
   }
+  
+  // MARK: - Testing Dot Button
+  
+  func testGivenLastElementIsNumber_WhenDotButtonIsTapped_ThenNumberIsDecimal() {
+    setNumberTapped("3")
+    setNumberTapped("9")
+    
+    calcTest.tappedDotButton(dot: ".")
+    setNumberTapped("5")
+    
+    XCTAssertTrue(calcTest.elements == ["39.5"])
+  }
+  
   
   // MARK: - Testing error message
   

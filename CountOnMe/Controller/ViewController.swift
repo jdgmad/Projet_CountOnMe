@@ -51,17 +51,23 @@
     @IBAction func tappedPoucentageButton(_ sender: UIButton) {
       calculator.tappedPourcentageButton()
     }
+    
+    @IBAction func tappedDotButton(_ sender: UIButton) {
+      guard let dotButton = sender.title(for: .normal) else { return }
+      calculator.tappedDotButton(dot: dotButton)
+    }
+    
   }
 
   // MARK: - Extension
   extension ViewController: DisplayDelegate {
-      func updateDisplay(text: String) {
+    func updateDisplay(text: String) {
           textView.text = text
-      }
+    }
     func presentAlert(errorMessage: String) {
           let alertVC = UIAlertController(title: "Erreur", message:
               errorMessage, preferredStyle: .alert)
           alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
           return self.present(alertVC, animated: true, completion: nil)
-      }
+    }
   }
