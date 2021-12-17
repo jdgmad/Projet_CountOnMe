@@ -12,12 +12,15 @@ import XCTest
 
 class CalculatorTests: XCTestCase {
   
-  var calcTest: Calculator!
+  private var calcTest: Calculator!
+  private var mock: MockDisplayDelegate!
   let maxDouble = Double.greatestFiniteMagnitude
   
   override func setUp() {
     super.setUp()
+    mock = MockDisplayDelegate()
     calcTest = Calculator()
+    calcTest.delegate = mock
   }
 
   func setNumberTapped(_ paramNumber: String) {
@@ -41,7 +44,7 @@ class CalculatorTests: XCTestCase {
       setOperandTapped("+")
       setNumberTapped("2")
     
-      XCTAssertTrue(calcTest.display == "1+2")
+      XCTAssertTrue(mock.returnText == "1+2")
   }
   
   // MARK: - Testing tappedNumberButton()
@@ -222,4 +225,19 @@ class CalculatorTests: XCTestCase {
     
     XCTAssertTrue(calcTest.errorSyntaxExpression == "Try to divid by zero")
   }
+}
+
+private class MockDisplayDelegate: DisplayDelegate {
+    var returnText: String!
+    var returnErrorMessage: String!
+    
+    func updateDisplay(text: String) {
+        returnText = text
+    }
+    
+    func presentAlert(errorMessage: String) {
+        returnErrorMessage  = errorMessage
+    }
+    
+    
 }

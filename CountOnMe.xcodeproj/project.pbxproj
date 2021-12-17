@@ -80,7 +80,6 @@
 			isa = PBXGroup;
 			children = (
 				652F128626FB177E0032517D /* Assets.xcassets */,
-				6571CC2B26F9FE8900F531D8 /* Extensions */,
 				656E860326F9B69B00AA4225 /* Controller */,
 				656E860226F9B68A00AA4225 /* View */,
 				656E860126F9B66300AA4225 /* Model */,
@@ -122,13 +121,6 @@
 				1FA43BD4224E569900F565CB /* ViewController.swift */,
 			);
 			path = Controller;
-			sourceTree = "<group>";
-		};
-		6571CC2B26F9FE8900F531D8 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -241,12 +241,13 @@ class Calculator {
 
 extension Double {
     
-    /// Convert double in String with variable decimal points.
+    /// Convert double in String with variable decimal points or exponant
     ///
     /// - Parameters:
     ///   - points: Give the numbers of decimal points to display
     ///
-    /// If there is no fractionnal part return only the integer part
+    /// If the number is over or les than 10 billions use the exponant format
+    /// Otherwise If there is no fractionnal part return only the integer part
     ///
     func getStringValue(withFloatingPoints points: Int = 0) -> String {
         if self < 10000000000 && self > -10000000000 {
